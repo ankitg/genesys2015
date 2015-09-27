@@ -10,9 +10,9 @@ class LoginPage extends Component {
 	};
 	dispatch = this.props.dispatch;
 	handleChange = () => {
-		var email = React.findDOMNode(this.refs.email).value.trim();
+		var username = React.findDOMNode(this.refs.username).value.trim();
 		var password = React.findDOMNode(this.refs.password).value.trim();
-		if (/^[^@]+@.*\./.test(email) && password.length >= 6) {
+		if (username.length >= 5 && password.length >= 6) {
 			this.setState({canSubmit: true});
 		}
 		else {
@@ -21,16 +21,15 @@ class LoginPage extends Component {
 	};
 	handleSubmit = (e) => {
 		e.preventDefault();
-		var email = React.findDOMNode(this.refs.email).value.trim();
+		var username = React.findDOMNode(this.refs.username).value.trim();
 		var password = React.findDOMNode(this.refs.password).value.trim();
-		if (!email || !password) {
+		if (!username || !password) {
 			return;
 		}
-		console.log(email);
+		console.log(username);
 		// this.props.dispatch(login(email, password));
-		React.findDOMNode(this.refs.email).value = "";
+		React.findDOMNode(this.refs.username).value = "";
 		React.findDOMNode(this.refs.password).value = "";
-		// this.props.closeModal();
 	};
 	render() {
 		return (<div className="center-content fill-screen">
@@ -38,8 +37,8 @@ class LoginPage extends Component {
 				<h2>Know Your Friend</h2>
 				<div className="center-content spaced">
 					<div className="input-field">
-						<input id="email" ref="email" type="email" className="validate" onChange={this.handleChange} />
-						<label for="email">Email</label>
+						<input id="username" ref="username" type="text" className="validate" onChange={this.handleChange} />
+						<label for="username">Username</label>
 					</div>
 				</div>
 				<div className="center-content spaced">

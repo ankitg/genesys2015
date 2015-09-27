@@ -70,7 +70,7 @@ module.exports = function (options) {
 		new webpack.PrefetchPlugin("react/lib/ReactComponentBrowserEnvironment")
 	];
 	if (options.prerender) {
-		plugins.push(new StatsPlugin(path.join(__dirname, "../public", "stats.prerender.json"), {
+		plugins.push(new StatsPlugin(path.join(__dirname, "../build", "stats.prerender.json"), {
 			chunkModules: true,
 			exclude: excludeFromStats
 		}));
@@ -85,7 +85,7 @@ module.exports = function (options) {
 		plugins.push(new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }));
 	}
 	else {
-		plugins.push(new StatsPlugin(path.join(__dirname, "../public", "stats.json"), {
+		plugins.push(new StatsPlugin(path.join(__dirname, "../build", "stats.json"), {
 			chunkModules: true,
 			exclude: excludeFromStats
 		}));
