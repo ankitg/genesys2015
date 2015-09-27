@@ -2,11 +2,11 @@
 // set up ======================================================================
 var express		 = require('express'),
 	bodyParser	 = require('body-parser'),
-	mongoose 	 = require('mongoose'),
-	passport 	 = require('passport'),
-	port     	 = process.env.PORT || 9003,
-	app			 = new express(),
-    _            = require('lodash');
+	mongoose 	   = require('mongoose'),
+	passport 	   = require('passport'),
+	port     	   = process.env.PORT || 9003,
+	app			     = new express(),
+  _            = require('lodash');
 
 var configDB = require('./config/database.js');
 
@@ -25,27 +25,89 @@ app.use(passport.session()); // persistent login sessions
 app.use('/api', passport.authenticate('basic'), ensureAuthenticated);
 
 // routes ======================================================================
-//require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
+var User      = require('./models/usermodel'),
+    Question = require('./models/questionmodel');
 
-var User     = require('./models/usermodel');
-// ,Question = require('./models/questionmodel');
+
+// initializing the questions
+var initializeQuestion = function(id, text, responses, answer, isEnabled) {
+ var question = new Question();
+
+ question.questionid = id;
+ question.questiontext = text;
+ question.responses = responses;
+ question.answer = answer;
+ question.isEnabled = isEnabled;
+
+ return question;
+};
+
+var initializeQuestions = function() {
+  var initialQuestions = [];
+
+  initialQuestions.push(initializeQuestion("1", "This is the first question?", ["true","false"], -1, false));
+  initialQuestions.push(initializeQuestion("1", "This is the second question?", ["true","false"], -1, false));
+
+  return initialQuestions;
+};
+
+app.post('/login', function(req, res) {
+  User.findOne({ 'username' :  req.body.username }, function(err, user) {
+        // if there are any errors, return the error before anything else
+        if (err) {
+          console.log(err);
+          res.send(err);
+          return;
+        }
+
+        // if no user is found
+        if (!user) {
+          console.log("User not found");
+          res.sendStatus(403);
+          return;
+        }
+
+        // if the user is found but the password is wrong
+        if (!user.validPassword(req.body.password)) {
+          console.log("Incorrect password");
+      res.sendStatus(403);
+      return;
+        }
+
+        // all is well, return successful user
+        res.send(user);
+    });
+});
 
 app.get('/signup', function(req, res) {
-    // create the user
-    var newUser       = new User();
+    // get the user id
+    User.find({},{'userid':1}).sort({'userid':-1}).limit(1).exec(function (err, user_with_max_id) {
 
-    // set the user's local credentials
-    newUser.username        = req.query.username;
-    newUser.password        = newUser.generateHash(req.query.password); // use the generateHash function in our user model
-    newUser.questions       = [];
+      // create the user
+      var newUser = new User();
 
-	// save the user
-    newUser.save(function(err) {
-        if (err) {
-        	console.log(err);
-            throw err;
-        }
-        res.send(newUser);
+      // set the user id
+      if(user_with_max_id.length === 1)
+      {
+        newUser.userid = user_with_max_id[0].userid + 1;
+      }　else {
+        newUser.userid = 1000;
+      }
+
+      // set the user's local credentials
+      newUser.username        = req.query.username;
+      newUser.password        = newUser.generateHash(req.query.password); // use the generateHash function in our user model
+      newUser.questions       = initializeQuestions();
+
+  	  // save the user
+      newUser.save(function(err) {
+          if (err) {
+          	console.log(err);
+              throw err;
+          }
+          res.send(newUser);
+      });
+
     });
 });
 

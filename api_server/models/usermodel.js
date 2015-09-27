@@ -1,4 +1,4 @@
-// app/models/user.js
+// app/models/usermodel.js
 // load the things we need
 var mongoose  = require('mongoose'),
 bcrypt   	  = require('bcrypt-nodejs');
@@ -7,6 +7,7 @@ bcrypt   	  = require('bcrypt-nodejs');
 var userSchema = mongoose.Schema({
     username     : String,
     password     : String,
+    userid 		 : Number,
     questions 	 : []
 });
 
