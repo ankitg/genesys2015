@@ -1,0 +1,11 @@
+.row {
+	display: flex;
+}
+
+.col-md-2 {
+	flex: 0 1 16.66667%;
+}
+
+.col-md-8 {
+	flex: 0 1 66.66667%;
+}

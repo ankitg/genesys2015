@@ -1,0 +1,177 @@
+//Bootstrap
+// Core variables and mixins
+// @import "bootstrap/variables";
+// @import "bootstrap/mixins";
+// Reset and dependencies
+// @import "bootstrap/normalize";
+// @import "bootstrap/print";
+// @import "bootstrap/glyphicons";
+// // Core CSS
+// @import "bootstrap/scaffolding";
+// @import "bootstrap/type";
+// @import "bootstrap/code";
+// @import "bootstrap/grid";
+// @import "bootstrap/tables";
+// @import "bootstrap/forms";
+// @import "bootstrap/buttons";
+// // Components
+// @import "bootstrap/component-animations";
+// @import "bootstrap/dropdowns";
+// @import "bootstrap/button-groups";
+// @import "bootstrap/input-groups";
+// @import "bootstrap/navs";
+// @import "bootstrap/navbar";
+// @import "bootstrap/breadcrumbs";
+// @import "bootstrap/pagination";
+// @import "bootstrap/pager";
+// @import "bootstrap/labels";
+// @import "bootstrap/badges";
+// @import "bootstrap/jumbotron";
+// @import "bootstrap/thumbnails";
+// @import "bootstrap/alerts";
+// @import "bootstrap/progress-bars";
+// @import "bootstrap/media";
+// @import "bootstrap/list-group";
+// @import "bootstrap/panels";
+// @import "bootstrap/responsive-embed";
+// @import "bootstrap/wells";
+// @import "bootstrap/close";
+// // // Components w/ JavaScript
+// // @import "bootstrap/modals";
+// // @import "bootstrap/tooltip";
+// // @import "bootstrap/popovers";
+// // @import "bootstrap/carousel";
+// // // Utility classes
+// @import "bootstrap/utilities";
+// @import "bootstrap/responsive-utilities";
+
+@import "variables.scss";
+@import "./components/topBar.scss";
+@import "./components/modal.scss";
+@import "./components/grid.scss";
+
+
+body {
+	margin:0;
+	overflow: hidden;
+}
+
+.center-content {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.fill-screen {
+	width: 100%;
+	height: 100vh;
+}
+
+.spaced {
+	margin: 10px 0px;
+}
+
+.scroll-y {
+	overflow-y: scroll;
+}
+
+.brand-logo {
+	margin-left: 20px;
+}
+
+.scrollable-body {
+	overflow-y: scroll;
+	position: absolute;
+	top: 64px;
+	bottom: 0px;
+	z-index: -1;
+	height: auto;
+	width: 100%;
+}
+
+.welcome-shelf {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	input {
+		min-width: 400px;
+	}
+	& > * {
+		margin: 10px 0px;
+	}
+}
+
+.question-container {
+	max-width: 700px;
+	// margin: auto;
+	.question {
+		margin: 10px 10px;
+		background: gray;
+		height: 250px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: white;
+		overflow: hidden;
+		img {
+			width: 100%;
+		}
+	}
+	.answers {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		.answer {
+			margin: 10px 10px;
+			flex: 1 1 20%;
+			height: 180px;
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			.image {
+				flex: 1 1 auto;
+				position: relative;
+				img {
+					left: 0;
+					top: 0;
+					width: 100%;
+					height: 100%;
+					position: absolute;
+				}
+			}
+			p {
+				flex: 0 1 auto;
+				padding-left: 10px;
+				margin: 5px;
+				pointer-events: none;
+			}
+		}
+	}
+}
+
+.ct-chart {
+	height: 300px;
+}
+
+.modal-anim-enter {
+	opacity: 0.00;
+	transform: scale(0.7);
+	transition: all 0.2s;
+}
+
+.modal-anim-enter.modal-anim-enter-active {
+	opacity: 1;
+	transform: scale(1);
+}
+
+.modal-anim-leave {
+	opacity: 1;
+	transform: scale(1);
+	transition: all 0.2s;
+}
+
+.modal-anim-leave.modal-anim-leave-active {
+	opacity: 0.00;
+	transform: scale(0.7);
+}
