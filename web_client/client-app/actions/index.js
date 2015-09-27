@@ -11,8 +11,8 @@ var actions = {
 			payload: {link}
 		};
 	},
-	fetchUser(username, email) {
-		var encoded = btoa(username+":"+email);
+	fetchUser(username, password) {
+		var encoded = btoa(username+":"+password);
 		return {
 			types: [types.USER.REQUEST, types.USER.PAYLOAD, types.REQUEST_FAIL],
 			callAPI: () => fetch(`http://macdaddy.local:9003/api/me`, {
@@ -30,6 +30,19 @@ var actions = {
 			type: types.ANSWER.SELECT,
 			question: question,
 			answer: answer
+		};
+	},
+	createUser(username, password) {
+		return {
+			types: [types.USER.REQUEST, types.USER.PAYLOAD, types.REQUEST_FAIL],
+			callAPI: () => fetch(`http://macdaddy.local:9003/api/me`, {
+				method: "post",
+				headers: {
+					"Accept": "application/json",
+					"Authorization": `Basic ${encoded}`
+				}
+			}),
+			payload: {}
 		};
 	}
 	//Async action example
