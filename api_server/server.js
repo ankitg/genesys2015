@@ -18,11 +18,19 @@ require('./config/passport')(passport); // pass passport for configuration
 app.use(bodyParser.urlencoded({ extended: false })); // get information from POST body
 app.use(bodyParser.json());
 
+// CORS
+var CORS = function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  next();
+};
+app.use(CORS);
+
 // required for passport
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
-app.use('/api', passport.authenticate('basic'), ensureAuthenticated);
+app.use('/api', CORS, passport.authenticate('basic'), ensureAuthenticated);
 
 // routes ======================================================================
 var User      = require('./models/usermodel'),
@@ -140,30 +148,7 @@ app.post('/api/addoreditaresponse', function(req, res) {
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
-    User.findOne({ 'username' :  req.user.username }, function(err, user) {
-        // if there are any errors, return the error before anything else
-        if (err) {
-         console.log(err);
-         res.send(err);
-         return;
-        }
-
-        // if no user is found
-        if (!user) {
-         console.log("User not found");
-         res.sendStatus(403);
-         return;
-        }
-
-        // if the user is found but the password is wrong
-        if (!user.validPassword(req.body.password)) {
-         console.log("Incorrect password");
-         res.sendStatus(403);
-         return;
-        }
-
-        next();
-    });
+    next();
   } else {
   	res.sendStatus(403);
   }
