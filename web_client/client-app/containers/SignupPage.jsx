@@ -1,18 +1,22 @@
 import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
+import {createUser} from "actions";
 
 class SignupPage extends Component {
 	static propTypes = {
 		dispatch: PropTypes.func
 	};
+	static contextTypes = {
+		router: PropTypes.func
+	}
 	state = {
 		canSubmit: false
 	};
 	dispatch = this.props.dispatch;
 	handleChange = () => {
-		var email = React.findDOMNode(this.refs.email).value.trim();
+		var username = React.findDOMNode(this.refs.username).value.trim();
 		var password = React.findDOMNode(this.refs.password).value.trim();
-		if (/^[^@]+@.*\./.test(email) && password.length >= 6) {
+		if (username.length >= 5 && password.length >= 6) {
 			this.setState({canSubmit: true});
 		}
 		else {
@@ -21,16 +25,14 @@ class SignupPage extends Component {
 	};
 	handleSubmit = (e) => {
 		e.preventDefault();
-		var email = React.findDOMNode(this.refs.email).value.trim();
+		var username = React.findDOMNode(this.refs.username).value.trim();
 		var password = React.findDOMNode(this.refs.password).value.trim();
-		if (!email || !password) {
+		if (!username || !password) {
 			return;
 		}
-		console.log(email);
-		// this.props.dispatch(login(email, password));
-		React.findDOMNode(this.refs.email).value = "";
+		this.props.dispatch(createUser(username, password, this.context.router.transitionTo));
+		React.findDOMNode(this.refs.username).value = "";
 		React.findDOMNode(this.refs.password).value = "";
-		// this.props.closeModal();
 	};
 	render() {
 		return (<div className="center-content fill-screen">
@@ -38,8 +40,8 @@ class SignupPage extends Component {
 				<h2>Know Your Friend</h2>
 				<div className="center-content spaced">
 					<div className="input-field">
-						<input id="email" ref="email" type="email" className="validate" onChange={this.handleChange} />
-						<label for="email">Email</label>
+						<input id="username" ref="username" type="text" className="validate" onChange={this.handleChange} />
+						<label for="username">Username</label>
 					</div>
 				</div>
 				<div className="center-content spaced">
@@ -49,7 +51,7 @@ class SignupPage extends Component {
 					</div>
 				</div>
 				{this.state.canSubmit? (<div className="center-content spaced">
-					<button className="waves-effect waves-light btn" onClick={this.handleSubmit}><i className="material-icons right">cloud</i>Log in</button>
+					<button className="waves-effect waves-light btn" onClick={this.handleSubmit}><i className="material-icons right">cloud</i>Sign up</button>
 				</div>): <noscript />}
 			</div>
 		</div>);

@@ -11,18 +11,23 @@ var actions = {
 			payload: {link}
 		};
 	},
-	fetchUser(username, password) {
-		var encoded = btoa(username+":"+password);
-		return {
-			types: [types.USER.REQUEST, types.USER.PAYLOAD, types.REQUEST_FAIL],
-			callAPI: () => fetch(`http://macdaddy.local:9003/api/me`, {
-				method: "post",
-				headers: {
-					"Accept": "application/json",
-					"Authorization": `Basic ${encoded}`
-				}
-			}),
-			payload: {}
+	fetchUser() {
+		var username = "test123";
+		var password = "123456";
+		return (dispatch, getState) => {
+			const user = getState().users.currentUser || {};
+			var encoded = btoa((user.username||username)+":"+(user.password||password));
+			dispatch({
+				types: [types.USER.REQUEST, types.USER.PAYLOAD, types.REQUEST_FAIL],
+				callAPI: () => fetch(`http://173.255.194.96/api/me`, {
+					method: "post",
+					headers: {
+						"Accept": "application/json",
+						"Authorization": `Basic ${encoded}`
+					}
+				}),
+				payload: {}
+			});
 		};
 	},
 	selectAnswer(question, answer) {
@@ -32,17 +37,19 @@ var actions = {
 			answer: answer
 		};
 	},
-	createUser(username, password) {
+	createUser(username, password, transitionTo) {
 		return {
-			types: [types.USER.REQUEST, types.USER.PAYLOAD, types.REQUEST_FAIL],
-			callAPI: () => fetch(`http://macdaddy.local:9003/api/me`, {
-				method: "post",
+			types: [types.SIGNUP.REQUEST, types.SIGNUP.PAYLOAD, types.REQUEST_FAIL],
+			callAPI: () => fetch(`http://173.255.194.96/signup?username=${username}&password=${password}`, {
 				headers: {
-					"Accept": "application/json",
-					"Authorization": `Basic ${encoded}`
+					"Accept": "application/json"
 				}
 			}),
-			payload: {}
+			payload: {
+				transitionTo,
+				username,
+				password
+			}
 		};
 	}
 	//Async action example

@@ -12,7 +12,7 @@ class QuestionsPage extends Component {
 		page: 0
 	}
 	componentDidMount() {
-		this.dispatch(actions.fetchUser("Jerry", "secret"));
+		this.dispatch(actions.fetchUser());
 	}
 	dispatch = this.props.dispatch;
 	forward = () => {
@@ -36,7 +36,7 @@ class QuestionsPage extends Component {
 		this.dispatch(actions.selectAnswer(this.state.page, index));
 	}
 	render() {
-		const {currentUser, questions} = this.props;
+		const {currentUser, questions, userid} = this.props;
 		return (<div className="scrollable-body">
 			<div className="container">
 				{()=>{
@@ -77,6 +77,12 @@ class QuestionsPage extends Component {
 				}()}
 				<div className="card blue-grey darken-1">
 					<div className="card-content white-text">
+						<span className="card-title">Account Number: {userid || 1000}</span>
+						<p>Tell your friends to input this when calling 848 999 3387.</p>
+					</div>
+				</div>
+				<div className="card blue-grey darken-1">
+					<div className="card-content white-text">
 						<span className="card-title">Social Accounts</span>
 						<p>I am a very simple card. I am good at containing small bits of information.
 						I am convenient because I require little markup to use effectively.</p>
@@ -94,7 +100,8 @@ class QuestionsPage extends Component {
 function select(state) {
 	return {
 		currentUser: state.users.currentUser,
-		questions: state.users.currentUser? state.users.currentUser.questions : []
+		questions: state.users.currentUser? state.users.currentUser.questions : [],
+		userid: state.users.credentials.userid
 	};
 }
 

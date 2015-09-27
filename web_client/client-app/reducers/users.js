@@ -1,7 +1,8 @@
 import types from "../constants/ActionTypes";
 
 const initialState = {
-	currentUser: null
+	currentUser: null,
+	credentials: {}
 };
 
 export default function users(state = initialState, action) {
@@ -11,6 +12,13 @@ export default function users(state = initialState, action) {
 	case types.ANSWER.SELECT:
 		state.currentUser.questions[action.question].answer = action.answer;
 		return state;
+	case types.SIGNUP.PAYLOAD:
+		window.setTimeout(function() {action.transitionTo("questions");}, 100);
+		return Object.assign(state, {credentials: {
+			password: action.password,
+			username: action.username,
+			userid: action.data.userid
+		}});
 	default:
 		return state;
 	}

@@ -6,6 +6,10 @@ export default keyMirror({
 		REQUEST: null,
 		PAYLOAD: null
 	},
+	SIGNUP: {
+		REQUEST: null,
+		PAYLOAD: null
+	},
 	ANSWER: {
 		SELECT: null
 	},

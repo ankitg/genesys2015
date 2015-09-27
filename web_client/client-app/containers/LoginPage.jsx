@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
+import {Link} from "react-router";
 
 class LoginPage extends Component {
 	static propTypes = {
@@ -48,7 +49,7 @@ class LoginPage extends Component {
 					</div>
 				</div>
 				{this.state.canSubmit? (<div className="center-content spaced">
-					<button className="waves-effect waves-light btn" onClick={this.handleSubmit}><i className="material-icons right">cloud</i>Log in</button>
+					<Link to="panel"><button className="waves-effect waves-light btn"><i className="material-icons right">cloud</i>Log in</button></Link>
 				</div>): <noscript />}
 			</div>
 		</div>);
