@@ -1,0 +1,27 @@
+{
+  "name": "genesys-2015-server",
+  "version": "0.1.0",
+  "description": "Server component for the genesys hack 2015",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ankitg/genesys2015.git"
+  },
+  "author": "ankitg",
+  "license": "CC-BY-4.0",
+  "homepage": "https://github.com/ankitg/genesys2015",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.13.2",
+    "express": "^4.13.1",
+    "lodash": "^3.10.1",
+    "mongoose": "^4.0.8",
+    "passport": "^0.2.2",
+    "passport-http": "^0.2.2",
+    "passport-local": "^1.0.0"
+  }
+}
