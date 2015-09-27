@@ -8,7 +8,9 @@ var questionSchema = mongoose.Schema({
     questiontext	: String,
     responses 		: [],
     answer 			: Number,
-    isEnabled		: Boolean
+    isEnabled		: Boolean,
+    questionImage	: String,
+    responseImages	: [],
 });
 
 // create the model for users and expose it to our app

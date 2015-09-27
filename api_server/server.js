@@ -38,7 +38,7 @@ var User      = require('./models/usermodel'),
 
 
 // initializing the questions
-var initializeQuestion = function(id, text, responses, answer, isEnabled) {
+var initializeQuestion = function(id, text, responses, answer, isEnabled, questionImage, responseImages) {
  var question = new Question();
 
  question.questionid = id;
@@ -46,6 +46,8 @@ var initializeQuestion = function(id, text, responses, answer, isEnabled) {
  question.responses = responses;
  question.answer = answer;
  question.isEnabled = isEnabled;
+ question.questionImage = questionImage;
+ question.responseImages = responseImages;
 
  return question;
 };
@@ -53,8 +55,9 @@ var initializeQuestion = function(id, text, responses, answer, isEnabled) {
 var initializeQuestions = function() {
   var initialQuestions = [];
 
-  initialQuestions.push(initializeQuestion("1", "This is the first question?", ["true","false","maybe","#antoine sucks!"], 3, true));
-  initialQuestions.push(initializeQuestion("2", "This is the second question?", ["true","false","maybe","#antoine sucks!"], 3, true));
+  initialQuestions.push(initializeQuestion("1", "If life were a video game, what kind would it be?", ["Action","RPG","Adventure","Party"], 4, true, "http://s3-ak.buzzfeed.com/static/2014-11/21/11/tmp/webdr03/bc788ed15d3794b6112bd3a366e1d0ea-0.jpg", ["http://s3-ak.buzzfeed.com/static/2014-11/20/14/enhanced/webdr10/enhanced-buzz-23496-1416513204-23.jpg","http://s3-ak.buzzfeed.com/static/2014-11/20/14/enhanced/webdr06/enhanced-buzz-21586-1416513224-15.jpg","http://s3-ak.buzzfeed.com/static/2014-11/20/14/enhanced/webdr04/enhanced-buzz-7567-1416513232-15.jpg","http://s3-ak.buzzfeed.com/static/2014-11/20/14/enhanced/webdr04/enhanced-buzz-7655-1416513240-4.jpg"]));
+  initialQuestions.push(initializeQuestion("2", "Your favourite type of music is?", ["Pop","HipHop","Metal","Country"], 1, true, "http://s3-ak.buzzfeed.com/static/2014-11/20/14/tmp/webdr08/3abf09a782fcf8e7a528557c2c05fed8-15.jpg", ["http://s3-ak.buzzfeed.com/static/2014-11/20/14/enhanced/webdr07/enhanced-buzz-15081-1416513262-17.jpg","http://s3-ak.buzzfeed.com/static/2014-11/20/14/enhanced/webdr01/enhanced-buzz-19442-1416513270-11.jpg","http://s3-ak.buzzfeed.com/static/2014-11/20/14/enhanced/webdr05/enhanced-buzz-18576-1416513287-8.jpg","http://s3-ak.buzzfeed.com/static/2014-11/20/14/enhanced/webdr03/enhanced-buzz-7924-1416513294-12.jpg"]));
+  initialQuestions.push(initializeQuestion("3", "If you starred in a movie, you would be?", ["The stoic badass","The bumbling best friend","The witty scene stealer","The sexy stranger"], 1, true, "http://s3-ak.buzzfeed.com/static/2014-11/20/15/tmp/webdr03/198a29a968bda9e8ef891338c4a53363-14.jpg", ["http://s3-ak.buzzfeed.com/static/2014-11/20/14/enhanced/webdr09/enhanced-buzz-22359-1416513324-14.jpg","http://s3-ak.buzzfeed.com/static/2014-11/20/14/enhanced/webdr09/enhanced-buzz-22359-1416513333-15.jpg","http://s3-ak.buzzfeed.com/static/2014-11/20/14/enhanced/webdr09/enhanced-buzz-22498-1416513342-0.jpg","http://s3-ak.buzzfeed.com/static/2014-11/20/14/enhanced/webdr11/enhanced-buzz-15758-1416513351-43.jpg"]));
 
   return initialQuestions;
 };
@@ -62,34 +65,6 @@ var initializeQuestions = function() {
 app.get('/test', function(req, res) {
   console.log("ping");
   res.send('pong');
-});
-
-app.post('/login', function(req, res) {
-  User.findOne({ 'username' :  req.body.username }, function(err, user) {
-      // if there are any errors, return the error before anything else
-      if (err) {
-        console.log(err);
-        res.send(err);
-        return;
-      }
-
-      // if no user is found
-      if (!user) {
-        console.log("User not found");
-        res.sendStatus(403);
-        return;
-      }
-
-      // if the user is found but the password is wrong
-      if (!user.validPassword(req.body.password)) {
-        console.log("Incorrect password");
-        res.sendStatus(403);
-        return;
-      }
-
-      // all is well, return successful user
-      res.send(user);
-    });
 });
 
 app.get('/signup', function(req, res) {
@@ -153,25 +128,8 @@ app.post('/api/addoreditaresponse', function(req, res) {
     });
 });
 
-// POST /quiz - initiates the quiz using the request object
-// GET /quiz-info/{quizId} - returns meta-info for the provided request object
-// GET /quiz/{quizId}/question/{questionNumber} - get question info
-// POST /quiz/{quizId}/question/{questionNumber} - submit user’s response
 
-// app.post('/quiz', function(req, res){
-// //   DAVID WILL SEND THIS:
-// //   {
-// //     "phoneNumber": 4165551234,
-// //     "quizId": 1234
-// //   }
-
-// // I WILL RESPOND WITH THIS:
-// // {
-// //   "totalQuestions": 5,
-// //   "friendName": "Jerry",
-// //   "gender": "male"
-// // }
-// });
+// /quiz routes for the Genesys dial in experience.
 
 app.post('/quiz', function(req, res){
   console.log("req.body.quiz_number is " + req.body.quiz_number);
@@ -183,7 +141,6 @@ app.post('/quiz', function(req, res){
     });
   });
 });
-
 
 app.get('/quiz/question', function(req, res){
 
@@ -201,8 +158,13 @@ app.get('/quiz/question', function(req, res){
       res.sendStatus(400);
     }
 
-    console.log("user.questions[(req.query.question_number -1)]: " + user.questions[(req.query.question_number -1)]);
-    res.send(user.questions[(req.query.question_number -1)]);
+    var temp = {};
+    _.assign(temp, user.questions[(req.query.question_number -1)]);
+    temp.options_count = temp.responses.count;
+    temp.answer_text = temp.responses[temp.answer];
+    temp.answer += 1;
+    console.log("Response: " + temp);
+    res.send(temp);
   });
 
 });
@@ -212,14 +174,6 @@ app.post('/quiz/question', function(req, res){
   res.sendStatus(200);
 });
 
-// .POST.{
-//   "quizId": 1234,
-//   "phoneNumber": 4165551234,
-//   "questionNumber": 2,
-//   "response": 2
-
-//   res.sendStatus(200);
-// }
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
